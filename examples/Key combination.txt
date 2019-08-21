@@ -1,0 +1,4 @@
+PRESS ctrl+s
+TIMEOUT 1
+PRESS esc
+TIMEOUT 1
