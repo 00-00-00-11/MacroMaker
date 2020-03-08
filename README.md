@@ -15,6 +15,14 @@ WRITE The quick brown fox jumps over the lazy dog.
 WRITE dead meme xd
 ```
 
+#### Mouse control
+```
+SCROLL DOWN
+SCROLL UP
+CLICK LEFT
+CLICK RIGHT
+```
+
 #### Press key(s)
 ```
 PRESS c

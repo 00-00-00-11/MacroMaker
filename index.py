@@ -1,14 +1,17 @@
 import os
 import ctypes
 
-from utils.taskcreator import TaskCreator
+from utils import config_handler
+from utils.task_creator import TaskCreator
 
 
 class MainIndex:
     def __init__(self, extension: str = ".txt"):
-        self.version = "1.0"
+        self.version = "1.1.0"
         self.extension = extension
         self.stopped = False
+        self.is_paused = False
+        self.config = config_handler.Config().get()
 
         ctypes.windll.kernel32.SetConsoleTitleW("MacroMaker")
         self.main_handler()
@@ -47,21 +50,30 @@ class MainIndex:
 
     def main_handler(self):
         """ The start of the script """
+        pause_key = self.config["MacroMaker"]["pause"]
         print(
             f"  Welcome to MacroMaker v{self.version}\n"
             f"  If you need help, please visit the following link:\n"
             f"  https://github.com/AlexFlipnote/MacroMaker\n"
+            f"\n  [!] pause={pause_key} (Button you use to pause script)\n"
         )
 
         filename = self.get_config()
-        task_manager = TaskCreator(filename)
-        print("Done, starting service...")
+        task_manager = TaskCreator(
+            filename, pause_key=pause_key
+        )
+
+        # Print it out as a reminder while loop goes on
+        print(f"[ Your pause key is '{pause_key}' ]")
 
         if not task_manager.debug:
             print('')  # This is only used to have some nice spacing with the text
 
         while True:
-            task_manager.execute_commands()
+            if not self.is_paused:
+                task_manager.execute_commands()
+
+            self.is_paused = True if task_manager.paused else False
 
 
 if __name__ == "__main__":

@@ -1,17 +1,37 @@
-import time
 import keyboard
+import mouse
+import os
 import sys
+import time
 
 
 class TaskCreator:
-    def __init__(self, filename: str, debug: bool = False, compile: bool = True):
+    def __init__(self, filename: str, debug: bool = False, compile: bool = True, pause_key: str = "home"):
         self.filename = filename
         self.debug = debug
+        self.paused = False
         self.loop_count = 0
         self._list = []
 
+        try:
+            keyboard.add_hotkey(pause_key, self.toggle_pause)
+        except ValueError:
+            self.filename = "config.ini"
+            self.error_break(
+                2, f"pause={pause_key}",
+                f"Pause key '{pause_key}' is not a valid keyboard input..."
+            )
+
         if compile:
             self.compile_macro()
+
+    def toggle_pause(self):
+        self.paused = False if self.paused else True
+
+        if self.paused:
+            print(f"--- Macro script has been set to pause ---", end='\r')
+        else:
+            print(" " * 50, end="\r")
 
     def linter_garbage_collector(self):
         """ This was only made to have linter not complain about 'unused variables' """
@@ -52,6 +72,45 @@ class TaskCreator:
 
         self._list.append(f"keyboard.press_and_release('{value}')")
         return True
+
+    def mouse_press(self, value: str):
+        """ Generates a mouse press """
+        if value == "left":
+            direction = "left"
+        elif value == "right":
+            direction = "right"
+        else:
+            return "invalidButton"
+
+        self._list.append(f"mouse.press_and_release(button='{direction}')")
+        return True
+
+    def mouse_scroll(self, value: str):
+        """ Generates a mouse scroll movement """
+        if value == "up":
+            direction = 1
+        elif value == "down":
+            direction = -1
+        else:
+            return "invalidDirection"
+
+        self._list.append(f"mouse.wheel(delta={direction})")
+        return True
+
+    def mouse_movement(self, value: str):
+        """ Coming soon... """
+        if input == "up":
+            mouse.move(0, -self.mouse_movement, absolute=False, duration=self.mouse_delay)
+            return True
+        if input == "down":
+            mouse.move(0, self.mouse_movement, absolute=False, duration=self.mouse_delay)
+            return True
+        if input == "left":
+            mouse.move(-self.mouse_movement, 0, absolute=False, duration=self.mouse_delay)
+            return True
+        if input == "right":
+            mouse.move(self.mouse_movement, 0, absolute=False, duration=self.mouse_delay)
+            return True
 
     def debug_manager(self, value: str):
         """ Manages the debug mode """
@@ -107,6 +166,9 @@ class TaskCreator:
 
     def execute_commands(self):
         """ Executes the ready-to-use string made by self.to_execute() """
+        if self.paused:
+            return False
+
         exec(self.to_execute())
         return True
 
@@ -133,6 +195,14 @@ class TaskCreator:
                     self.error_break(num, line, "Could not understand what key you want the script to press")
                 if send_context == "notMapped":
                     self.error_break(num, line, "Unknown key, if you're trying to press more at a time, use '+' between or use 'WRITE' for whatever to type.")
+            elif prefix == "click":
+                send_context = self.mouse_press(context)
+                if send_context == "invalidButton":
+                    self.error_break(num, line, f"Expected either 'left' or 'right', got '{context}'")
+            elif prefix == "scroll":
+                send_context = self.mouse_scroll(context)
+                if send_context == "invalidDirection":
+                    self.error_break(num, line, f"Expected either 'up' or 'down', got '{context}'")
             elif prefix == "timeout":
                 send_context = self.timeout(context)
                 if send_context == "errVal":
@@ -150,5 +220,10 @@ class TaskCreator:
 
         if self.debug:
             print(data)
+
+        if os.name == "nt":
+            os.system("cls")
+        else:
+            os.system("clear")
 
         return True
