@@ -6,32 +6,14 @@ import time
 
 
 class TaskCreator:
-    def __init__(self, filename: str, debug: bool = False, compile: bool = True, pause_key: str = "home"):
+    def __init__(self, filename: str, debug: bool = False, compile: bool = True):
         self.filename = filename
         self.debug = debug
-        self.paused = False
         self.loop_count = 0
         self._list = []
 
-        try:
-            keyboard.add_hotkey(pause_key, self.toggle_pause)
-        except ValueError:
-            self.filename = "config.ini"
-            self.error_break(
-                2, f"pause={pause_key}",
-                f"Pause key '{pause_key}' is not a valid keyboard input..."
-            )
-
         if compile:
             self.compile_macro()
-
-    def toggle_pause(self):
-        self.paused = False if self.paused else True
-
-        if self.paused:
-            print(f"--- Macro script has been set to pause ---", end='\r')
-        else:
-            print(" " * 50, end="\r")
 
     def linter_garbage_collector(self):
         """ This was only made to have linter not complain about 'unused variables' """
@@ -166,9 +148,6 @@ class TaskCreator:
 
     def execute_commands(self):
         """ Executes the ready-to-use string made by self.to_execute() """
-        if self.paused:
-            return False
-
         exec(self.to_execute())
         return True
 
