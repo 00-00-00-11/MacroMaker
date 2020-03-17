@@ -9,7 +9,7 @@ from utils.task_creator import TaskCreator
 
 class MainIndex:
     def __init__(self, extension: str = ".txt"):
-        self.version = "1.1.1"
+        self.version = "1.1.2"
         self.extension = extension
         self.compiled = False
         self.is_paused = False

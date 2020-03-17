@@ -64,7 +64,7 @@ class TaskCreator:
         else:
             return "invalidButton"
 
-        self._list.append(f"mouse.press_and_release(button='{direction}')")
+        self._list.append(f"mouse.click(button='{direction}')")
         return True
 
     def mouse_scroll(self, value: str):
