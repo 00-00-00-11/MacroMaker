@@ -9,7 +9,7 @@ from utils.task_creator import TaskCreator
 
 class MainIndex:
     def __init__(self, extension: str = ".txt"):
-        self.version = "1.1.2"
+        self.version = "1.1.3"
         self.extension = extension
         self.compiled = False
         self.is_paused = False
@@ -58,7 +58,7 @@ class MainIndex:
         self.is_paused = False if self.is_paused else True
 
         if self.is_paused:
-            print(f"--- Macro script has been set to pause ---", end='\r')
+            print("--- Macro script has been set to pause ---", end='\r')
         else:
             print(" " * 50, end="\r")
             self.e.set()
