@@ -57,9 +57,9 @@ class TaskCreator:
 
     def mouse_press(self, value: str):
         """ Generates a mouse press """
-        if value == "left":
+        if value.lower() == "left":
             direction = "left"
-        elif value == "right":
+        elif value.lower() == "right":
             direction = "right"
         else:
             return "invalidButton"
@@ -69,9 +69,9 @@ class TaskCreator:
 
     def mouse_scroll(self, value: str):
         """ Generates a mouse scroll movement """
-        if value == "up":
+        if value.lower() == "up":
             direction = 1
-        elif value == "down":
+        elif value.lower() == "down":
             direction = -1
         else:
             return "invalidDirection"
@@ -81,16 +81,16 @@ class TaskCreator:
 
     def mouse_movement(self, value: str):
         """ Coming soon... """
-        if input == "up":
+        if input.lower() == "up":
             mouse.move(0, -self.mouse_movement, absolute=False, duration=self.mouse_delay)
             return True
-        if input == "down":
+        if input.lower() == "down":
             mouse.move(0, self.mouse_movement, absolute=False, duration=self.mouse_delay)
             return True
-        if input == "left":
+        if input.lower().lower() == "left":
             mouse.move(-self.mouse_movement, 0, absolute=False, duration=self.mouse_delay)
             return True
-        if input == "right":
+        if input.lower() == "right":
             mouse.move(self.mouse_movement, 0, absolute=False, duration=self.mouse_delay)
             return True
 
