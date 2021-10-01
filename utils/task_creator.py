@@ -163,7 +163,7 @@ class TaskCreator:
 
             make_list = line.split(" ")
             prefix = make_list[0].lower()
-            context = " ".join([g for g in make_list[1:]]) if len(make_list) > 1 else None
+            context = " ".join([g.lower() for g in make_list[1:]]) if len(make_list) > 1 else None
 
             if not context:
                 self.error_break(num, line, f"Missing context to '{prefix.upper()}', can't handle empty context")
@@ -193,7 +193,7 @@ class TaskCreator:
             elif prefix == "debug":
                 send_context = self.debug_manager(context)
                 if send_context == "invalid":
-                    self.error_break(num, line, f"Debug mode only accepts 'TRUE' or 'FALSE'")
+                    self.error_break(num, line, "Debug mode only accepts 'TRUE' or 'FALSE'")
             else:
                 self.error_break(num, line, f"Unknown command '{prefix.upper()}'")
 
